@@ -1,0 +1,34 @@
+# Render.com monorepo deployment for frontend (Vite) and backend (Node.js)
+
+services:
+  - type: web
+    name: hardbanrecords-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.cjs
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        sync: false
+      - key: S3_BUCKET_NAME
+        sync: false
+    autoDeploy: true
+    rootDir: backend
+
+  - type: web
+    name: hardbanrecords-frontend
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+    autoDeploy: true
+    rootDir: .
