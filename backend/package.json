@@ -12,11 +12,14 @@
   "type": "commonjs",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.878.0",
-  "@aws-sdk/s3-request-presigner": "^3.878.0",
-  "@google/genai": "^1.15.0",
+    "@aws-sdk/s3-request-presigner": "^3.878.0",
+    "@google/genai": "^1.15.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.4"
   }
 }
