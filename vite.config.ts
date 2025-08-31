@@ -1,18 +1,14 @@
-import path from 'path';
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// Usunęliśmy 'loadEnv', ponieważ nie wczytujemy już zmiennych środowiskowych do frontendu.
 export default defineConfig({
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, '.'),
-    }
-  },
-  // Usunęliśmy całą sekcję 'define', która poprzednio przekazywała klucz API.
+  plugins: [react()],
   server: {
-    watch: {
-      usePolling: true,
-    }
-  }
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
+  },
 });
-
