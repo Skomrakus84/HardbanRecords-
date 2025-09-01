@@ -1,7 +1,6 @@
-import { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useAppStore } from '../../store/appStore';
 
-// Import typu z store zamiast redefiniowania
 interface MusicRelease {
   id: number;
   title: string;
