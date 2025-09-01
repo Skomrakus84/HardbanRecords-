@@ -1,3 +1,6 @@
+# Ignoruj logi aplikacji
+backend.log
+frontend.log
 # Logs
 logs
 *.log

@@ -1,3 +1,18 @@
+// Upload file to S3 using presigned URL
+export async function uploadFileToS3(file: File): Promise<{ fileUrl: string }> {
+  // 1. Pobierz presigned URL z backendu
+  const { data } = await apiClient.get('/s3-presigned-url', {
+    params: { fileName: file.name, fileType: file.type }
+  });
+  // 2. Wyślij plik bezpośrednio do S3
+  await fetch(data.presignedUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': file.type },
+    body: file
+  });
+  // 3. Zwróć docelowy URL pliku
+  return { fileUrl: data.fileUrl };
+}
 import axios from 'axios';
 
 const API_URL = 'http://localhost:3001/api';

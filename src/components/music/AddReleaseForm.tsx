@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store/appStore';
+import { uploadFileToS3 } from '../../api/client';
 
 interface AddReleaseFormProps {
   onClose: () => void;
@@ -12,13 +13,44 @@ export const AddReleaseForm = ({ onClose }: AddReleaseFormProps) => {
     artist: '',
     genre: '',
     releaseDate: '',
-    splits: [{ name: '', share: '' }]
+    splits: [{ name: '', share: '' }],
+    coverImageUrl: '',
+    audioUrl: ''
   });
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addRelease(formData);
-    onClose();
+    setUploading(true);
+    try {
+      let coverImageUrl = formData.coverImageUrl;
+      let audioUrl = formData.audioUrl;
+      if (coverFile) {
+        const { fileUrl } = await uploadFileToS3(coverFile);
+        coverImageUrl = fileUrl;
+      }
+      if (audioFile) {
+        const { fileUrl } = await uploadFileToS3(audioFile);
+        audioUrl = fileUrl;
+      }
+      // Only send the correct fields to backend
+      await addRelease({
+        title: formData.title,
+        artist: formData.artist,
+        genre: formData.genre,
+        releaseDate: formData.releaseDate,
+        splits: formData.splits,
+        coverImageUrl,
+        audioUrl
+      });
+      setUploading(false);
+      onClose();
+    } catch (err) {
+      alert('Błąd uploadu pliku.');
+      setUploading(false);
+    }
   };
 
   const addSplit = () => {
@@ -60,7 +92,6 @@ export const AddReleaseForm = ({ onClose }: AddReleaseFormProps) => {
             />
           </label>
         </div>
-
         <div style={{ marginBottom: '15px' }}>
           <label>
             Artist:
@@ -79,7 +110,6 @@ export const AddReleaseForm = ({ onClose }: AddReleaseFormProps) => {
             />
           </label>
         </div>
-
         <div style={{ marginBottom: '15px' }}>
           <label>
             Genre:
@@ -98,7 +128,6 @@ export const AddReleaseForm = ({ onClose }: AddReleaseFormProps) => {
             />
           </label>
         </div>
-
         <div style={{ marginBottom: '15px' }}>
           <label>
             Release Date:
@@ -117,7 +146,34 @@ export const AddReleaseForm = ({ onClose }: AddReleaseFormProps) => {
             />
           </label>
         </div>
-
+        <div style={{ marginBottom: '15px' }}>
+          <label>
+            Plik muzyczny:
+            <input
+              type="file"
+              accept="audio/*"
+              onChange={e => {
+                if (e.target.files && e.target.files[0]) setAudioFile(e.target.files[0]);
+              }}
+              style={{ display: 'block', marginTop: '8px', color: 'white' }}
+            />
+          </label>
+          {audioFile && <span style={{ color: 'white' }}>Wybrano: {audioFile.name}</span>}
+        </div>
+        <div style={{ marginBottom: '15px' }}>
+          <label>
+            Cover Art:
+            <input
+              type="file"
+              accept="image/*"
+              onChange={e => {
+                if (e.target.files && e.target.files[0]) setCoverFile(e.target.files[0]);
+              }}
+              style={{ display: 'block', marginTop: '8px', color: 'white' }}
+            />
+          </label>
+          {coverFile && <span style={{ color: 'white' }}>Wybrano: {coverFile.name}</span>}
+        </div>
         <div style={{ marginBottom: '15px' }}>
           <h3>Splits</h3>
           {formData.splits.map((split, index) => (
@@ -173,7 +229,6 @@ export const AddReleaseForm = ({ onClose }: AddReleaseFormProps) => {
             Add Split
           </button>
         </div>
-
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
           <button
             type="button"
@@ -190,15 +245,16 @@ export const AddReleaseForm = ({ onClose }: AddReleaseFormProps) => {
           </button>
           <button
             type="submit"
+            disabled={uploading}
             style={{
-              backgroundColor: '#4CAF50',
+              backgroundColor: uploading ? '#888' : '#4CAF50',
               color: 'white',
               padding: '10px 20px',
               border: 'none',
               borderRadius: '4px'
             }}
           >
-            Create Release
+            {uploading ? 'Uploading...' : 'Create Release'}
           </button>
         </div>
       </form>

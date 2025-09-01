@@ -1,20 +1,39 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useAppStore } from '../../store/appStore';
-import AIToolCard from '../../components/AIToolCard';
-import TaskManager from '../../components/TaskManager';
-import Modal from '../../components/Modal';
-import ConfirmationModal from '../../components/ConfirmationModal';
-import Tooltip from '../../components/Tooltip';
-import HelpView from '../../components/HelpView';
-import { PUBLISHING_AI_HELP_TOPICS, RIGHTS_DEFINITIONS } from '../../components/constants';
+import BookForm from '../../components/publishing/BookForm';
 
-// Pełna implementacja DigitalPublishingAIView z obsługą AI, splits, chapters, tabs itd.
-const DigitalPublishingAIView: React.FC = () => {
-  // ...przeniesiona cała logika i UI z Twojego kodu DigitalPublishingAIView...
+
+const PublishingPage: React.FC = () => {
+  const [showBookForm, setShowBookForm] = useState(false);
+  const books = useAppStore(state => state.publishing.books);
+
   return (
-    <div>
-      {/* ...pełna logika i UI z Twojego kodu... */}
+    <div style={{ padding: 32 }}>
+      <h1 style={{ color: 'white' }}>Publikacje</h1>
+      <button
+        style={{ marginBottom: 24, background: '#4CAF50', color: 'white', padding: '10px 20px', border: 'none', borderRadius: 4 }}
+        onClick={() => setShowBookForm(true)}
+      >
+        Dodaj książkę
+      </button>
+      {showBookForm && (
+        <BookForm onClose={() => setShowBookForm(false)} />
+      )}
+      <div style={{ marginTop: 32 }}>
+        <h2 style={{ color: 'white' }}>Lista książek</h2>
+        <ul>
+          {books.map(book => (
+            <li key={book.id} style={{ color: 'white', marginBottom: 12 }}>
+              <strong>{book.title}</strong> — {book.author} ({book.genre})
+              {book.coverImageUrl && (
+                <img src={book.coverImageUrl} alt="okładka" style={{ height: 60, marginLeft: 16, verticalAlign: 'middle', borderRadius: 4 }} />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
-export default DigitalPublishingAIView;
+
+export default PublishingPage;

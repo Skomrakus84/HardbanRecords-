@@ -8,6 +8,8 @@
 - Naprawa importów i typów, dopuszczenie `undefined` w typach, poprawa Task i AppState
 - Analiza i uporządkowanie katalogów: główny, src, src/components, src/pages, backend, cypress, scripts, layouts, utils
 - Identyfikacja i przygotowanie do usunięcia zbędnych plików .md
+- Wdrożenie uploadu plików okładki i pliku muzycznego w module muzycznym (AddReleaseForm, integracja z S3, backend, client)
+- Naprawa struktury JSX i typów w AddReleaseForm, przekazywanie tylko właściwych pól do backendu
 
 ### Backend
 
@@ -33,7 +35,7 @@
 ### Zadania backendowe
 
 - Moduł Muzyczny:
-	- [ ] `POST /api/music/releases` - do dodawania nowego wydania
+	- [x] `POST /api/music/releases` - do dodawania nowego wydania (z uploadem okładki i pliku muzycznego)
 	- [ ] `PATCH /api/music/releases/:id/splits` - do aktualizacji podziałów tantiem
 	- [ ] `POST /api/music/tasks` - do dodawania nowego zadania
 	- [ ] `PATCH /api/music/tasks/:id` - do zmiany statusu zadania
@@ -44,9 +46,10 @@
 	- [ ] `POST /api/publishing/tasks` - do dodawania nowego zadania
 	- [ ] `PATCH /api/publishing/tasks/:id` - do zmiany statusu zadania
 - Integracja z AWS S3 (Przesyłanie Plików):
-	- [ ] Instalacja `aws-sdk`
-	- [ ] Stworzenie endpointu `GET /api/s3-presigned-url`, który generuje bezpieczny, tymczasowy link do przesyłania plików
-	- [ ] Implementacja logiki po stronie frontendu do przesyłania plików bezpośrednio do S3 przy użyciu wygenerowanego linku
+	- [x] Instalacja `aws-sdk`
+	- [x] Stworzenie endpointu `GET /api/s3-presigned-url`, który generuje bezpieczny, tymczasowy link do przesyłania plików
+	- [x] Implementacja logiki po stronie frontendu do przesyłania plików bezpośrednio do S3 przy użyciu wygenerowanego linku
+	- [ ] Wdrożenie uploadu ilustracji do książek oraz plików do rozdziałów (kolejny krok)
 - Dodanie podstawowej walidacji przychodzących danych
 - Zorganizowanie kodu w moduły (np. osobne pliki dla `routes`, `controllers`)
 - Przygotowanie aplikacji do wdrożenia na darmowej platformie (np. Vercel, Render)
