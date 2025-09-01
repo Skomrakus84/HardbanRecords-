@@ -1,101 +1,67 @@
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import Header from './components/Header';
+import DashboardCard from './components/DashboardCard';
+import ToastContainer from './components/ToastContainer';
+import FullScreenLoader from './components/FullScreenLoader';
+import OnboardingTour, { TOUR_STEPS } from './components/OnboardingTour';
+import MusicPublishingView from './pages/music/MusicPage';
+import DigitalPublishingAIView from './pages/publishing/PublishingPage';
 import { useAppStore } from './store/appStore';
 
-// --- Style CSS-in-JS dla ciemnego motywu ---
-const styles: { [key: string]: React.CSSProperties } = {
-  app: {
-    display: 'flex',
-    fontFamily: `'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`,
-    backgroundColor: '#121212',
-    color: '#E0E0E0',
-    minHeight: '100vh',
-  },
-  sidebar: {
-    width: '240px',
-    backgroundColor: '#1E1E1E',
-    padding: '20px',
-    borderRight: '1px solid #2D2D2D',
-  },
-  logo: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: '40px',
-  },
-  nav: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  navLink: {
-    color: '#A0A0A0',
-    textDecoration: 'none',
-    fontSize: '18px',
-    padding: '12px 15px',
-    borderRadius: '8px',
-    marginBottom: '10px',
-    transition: 'background-color 0.2s, color 0.2s',
-  },
-  navLinkActive: {
-    backgroundColor: '#333333',
-    color: '#FFFFFF',
-  },
-  mainContent: {
-    flex: 1,
-    padding: '40px',
-  },
-  header: {
-    fontSize: '32px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    borderBottom: '1px solid #2D2D2D',
-    paddingBottom: '15px',
-  },
-};
-
-// --- Komponenty-Strony (placeholdery) ---
-const Dashboard = () => <h1 style={styles.header}>Dashboard</h1>;
-const Music = () => {
-  const releases = useAppStore(state => state.music.releases);
-  return (
-    <div>
-      <h1 style={styles.header}>Music Publishing</h1>
-      <p>Załadowano {releases.length} wydawnictw.</p>
-      <pre style={{backgroundColor: '#222', padding: '10px', borderRadius: '5px'}}>
-        {JSON.stringify(releases, null, 2)}
-      </pre>
-    </div>
-  );
-};
-const Publishing = () => <h1 style={styles.header}>Digital Publishing</h1>;
-
-// --- Główny Komponent Aplikacji ---
 export default function App() {
-  const fetchInitialData = useAppStore((state) => state.fetchInitialData);
+  const { isInitialized, initializeApp, view, setView, tourStepIndex, startTour, nextTourStep, skipTour } = useAppStore(state => ({
+    isInitialized: state.isInitialized,
+    initializeApp: state.initializeApp,
+    view: state.view,
+    setView: state.setView,
+    tourStepIndex: state.onboarding.tourStepIndex,
+    startTour: state.startTour,
+    nextTourStep: state.nextTourStep,
+    skipTour: state.skipTour,
+  }));
+  const currentTourStep = tourStepIndex >= 0 ? TOUR_STEPS[tourStepIndex] : null;
 
   useEffect(() => {
-    fetchInitialData();
-  }, [fetchInitialData]);
+    initializeApp();
+  }, [initializeApp]);
+
+  useEffect(() => {
+    if (isInitialized) {
+      const onboardingComplete = useAppStore.getState().onboarding.onboardingComplete;
+      if (!onboardingComplete) {
+        startTour();
+      }
+    }
+  }, [isInitialized, startTour]);
+
+  if (!isInitialized) {
+    return <FullScreenLoader />;
+  }
 
   return (
-    <Router>
-      <div style={styles.app}>
-        <nav style={styles.sidebar}>
-          <div style={styles.logo}>HardbanLab</div>
-          <div style={styles.nav}>
-            <NavLink to="/" style={({ isActive }) => ({ ...styles.navLink, ...(isActive ? styles.navLinkActive : {}) })}>Dashboard</NavLink>
-            <NavLink to="/music" style={({ isActive }) => ({ ...styles.navLink, ...(isActive ? styles.navLinkActive : {}) })}>Music AI</NavLink>
-            <NavLink to="/publishing" style={({ isActive }) => ({ ...styles.navLink, ...(isActive ? styles.navLinkActive : {}) })}>Publishing AI</NavLink>
-          </div>
-        </nav>
-        <main style={styles.mainContent}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/music" element={<Music />} />
-            <Route path="/publishing" element={<Publishing />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <>
+      <Header />
+      <main className="container">
+        {view === 'DASHBOARD' && (
+          <>
+            <div className="main-heading">
+              <h1>Your Creative Universe</h1>
+              <p>One unified dashboard for your music and literature projects, supercharged by AI.</p>
+            </div>
+            <div className="dashboard-grid">
+              <DashboardCard icon="🎵" title="Music Publishing" description="Manage your releases, from metadata generation and cover art to sync licensing and royalty splits." onClick={() => setView('MUSIC')} />
+              <DashboardCard icon="📚" title="Digital Publishing" description="Tools for authors to write, edit, market, and distribute their books, with AI-powered assistance at every step." onClick={() => setView('PUBLISHING')} />
+            </div>
+          </>
+        )}
+        {view === 'MUSIC' && <MusicPublishingView />}
+        {view === 'PUBLISHING' && <DigitalPublishingAIView />}
+      </main>
+      {currentTourStep && (
+        <OnboardingTour stepConfig={currentTourStep} onNext={nextTourStep} onSkip={skipTour} isLastStep={tourStepIndex === TOUR_STEPS.length - 1} />
+      )}
+      <ToastContainer />
+    </>
   );
 }

@@ -1,21 +1,14 @@
 {
   "compilerOptions": {
-    // Target i module
     "target": "ES2022",
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    
-    // Module resolution
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    
-    // JSX
     "jsx": "react-jsx",
-    
-    // Type checking - bardzo ważne!
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "noImplicitReturns": true,
@@ -24,16 +17,10 @@
     "noImplicitOverride": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-    
-    // Unused code detection
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    
-    // Output
     "noEmit": true,
     "skipLibCheck": true,
-    
-    // Paths dla lepszych importów
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -43,18 +30,12 @@
       "@/utils/*": ["./src/utils/*"],
       "@/api/*": ["./src/api/*"]
     },
-    
-    // Inne przydatne opcje
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
-    
-    // Dla lepszego DX
     "incremental": true,
     "composite": false
   },
-  
-  // Include/exclude
   "include": [
     "src/**/*",
     "src/**/*.ts",
@@ -62,7 +43,6 @@
     "src/**/*.js",
     "src/**/*.jsx"
   ],
-  
   "exclude": [
     "node_modules",
     "dist",
@@ -73,8 +53,6 @@
     "**/*.spec.tsx",
     "**/*.test.tsx"
   ],
-  
-  // References dla workspaces
   "references": [
     { "path": "./tsconfig.node.json" }
   ]
