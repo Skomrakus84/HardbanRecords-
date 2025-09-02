@@ -76,14 +76,32 @@ const ChapterEditForm: React.FC<ChapterEditFormProps> = ({ chapter, onSave, onCa
           <input type="file" accept="audio/*" onChange={e => setAudioFile(e.target.files?.[0] || null)} />
         </label>
         {audioFile && <button type="button" onClick={() => handleUpload(audioFile, setAudioUrl)} disabled={uploading}>Wyślij audio</button>}
-        {audioUrl && <span style={{ color: 'white', marginLeft: 8 }}>Plik audio załadowany</span>}
+        {audioUrl && (
+          <span style={{ color: 'white', marginLeft: 8 }}>
+            Plik audio załadowany
+            <audio controls src={audioUrl} style={{ display: 'block', marginTop: 8, maxWidth: 300 }}>
+              Twój przeglądarka nie obsługuje odtwarzacza audio.
+            </audio>
+          </span>
+        )}
       </div>
       <div style={{ marginBottom: 12 }}>
         <label style={{ color: 'white' }}>Dowolny plik:
           <input type="file" onChange={e => setFileFile(e.target.files?.[0] || null)} />
         </label>
         {fileFile && <button type="button" onClick={() => handleUpload(fileFile, setFileUrl)} disabled={uploading}>Wyślij plik</button>}
-        {fileUrl && <span style={{ color: 'white', marginLeft: 8 }}>Plik załadowany</span>}
+        {fileUrl && (
+          <span style={{ color: 'white', marginLeft: 8 }}>
+            Plik załadowany
+            <div style={{ marginTop: 8 }}>
+              {fileUrl.endsWith('.pdf') ? (
+                <iframe src={fileUrl} style={{ width: 300, height: 200, border: '1px solid #444', background: '#fff' }} title="Podgląd pliku PDF" />
+              ) : (
+                <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#90caf9' }}>Pobierz / Otwórz plik</a>
+              )}
+            </div>
+          </span>
+        )}
       </div>
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button type="button" onClick={onCancel} style={{ background: '#666', color: 'white', padding: '10px 20px', border: 'none', borderRadius: 4 }}>Anuluj</button>

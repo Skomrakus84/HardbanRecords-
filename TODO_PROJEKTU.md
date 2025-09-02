@@ -10,6 +10,65 @@
 - Identyfikacja i przygotowanie do usunięcia zbędnych plików .md
 - Wdrożenie uploadu plików okładki i pliku muzycznego w module muzycznym (AddReleaseForm, integracja z S3, backend, client)
 - Naprawa struktury JSX i typów w AddReleaseForm, przekazywanie tylko właściwych pól do backendu
+- Wdrożenie obsługi dodawania i usuwania rozdziałów w `ChaptersPage` (frontend, Zustand, UX)
+- Wdrożenie podglądu plików audio i PDF w `ChapterEditForm` (audio player, iframe/pdf, link do pobrania)
+
+### Widoki i komponenty frontend
+
+#### Niezbędne widoki (pages):
+- [x] Dashboard (strona główna z podsumowaniem)
+- [x] MusicPage (zarządzanie wydaniami muzycznymi)
+- [x] PublishingPage (zarządzanie książkami)
+- [x] TasksPage (zadania globalne lub per moduł)
+- [x] ChaptersPage (edycja rozdziałów książki)
+- [x] SplitsView (edycja podziałów tantiem)
+- [x] ReleasesView (lista wydań muzycznych)
+- [x] HomePage (landing, onboarding)
+
+#### Niezbędne komponenty formularzy:
+- [x] AddReleaseForm (dodawanie wydania muzycznego)
+- [x] BookForm (dodawanie/edycja książki)
+- [x] ChapterEditForm (edycja rozdziału)
+- [x] SplitsForm (edycja podziałów tantiem)
+- [x] TaskForm (dodawanie/edycja zadania)
+
+#### Niezbędne komponenty list i kart:
+- [x] ReleaseCard (pojedyncze wydanie muzyczne)
+- [x] BookCard (pojedyncza książka)
+- [x] ChapterCard (pojedynczy rozdział)
+- [x] TaskCard (pojedyncze zadanie)
+- [x] DashboardCard (kafelek na dashboardzie)
+
+#### Komponenty wspólne/utility:
+- [x] Modal (modalne okno)
+- [x] ConfirmationModal (potwierdzenie akcji)
+- [x] ToastContainer (powiadomienia)
+- [x] FullScreenLoader (ładowanie globalne)
+- [x] Tooltip (podpowiedzi)
+- [x] HelpView (pomoc)
+- [x] Header (nagłówek)
+- [x] MainLayout (layout aplikacji)
+- [x] FileUpload (komponent uploadu plików)
+- [x] OnboardingTour (przewodnik po aplikacji)
+
+#### Dodatkowe/rozszerzające funkcje (nice-to-have):
+- [x] SearchBar (wyszukiwarka wydania/książki/rozdziału)
+- [x] FilterBar (filtrowanie list)
+- [x] UserProfile (profil użytkownika)
+- [x] SettingsPage (ustawienia aplikacji)
+- [x] AnalyticsView (statystyki, wykresy)
+- [ ] AI/AssistantPanel (integracja AI, podpowiedzi)
+- [x] NotificationBell (ikona powiadomień)
+- [x] ActivityLog (log aktywności)
+- [x] ErrorBoundary (obsługa błędów)
+- [x] ThemeSwitcher (zmiana motywu)
+- [x] LanguageSwitcher (zmiana języka)
+- [x] Pagination (paginacja list)
+- [x] EmptyState (widok pustej listy)
+- [x] FilePreview (zaawansowany podgląd plików)
+- [x] ImageGallery (galeria ilustracji książki)
+- [x] CollaboratorsList (lista współtwórców)
+- [x] TagInput (dodawanie tagów/keywordów)
 
 ### Backend
 
@@ -24,32 +83,39 @@
 - Stworzenie endpointu `GET /api/data` do pobierania całego stanu aplikacji (książki, wydania, zadania)
 - Implementacja mechanizmu CORS, aby umożliwić komunikację między frontendem a backendem
 
+
+## Ostatnie postępy (wrzesień 2025)
+
+- [x] Globalna integracja Zustand store z backendem (fetch/add/update/delete przez API, usunięcie mocków, refaktoryzacja mutacji, pełna synchronizacja danych)
+- [x] Refaktoryzacja wszystkich operacji mutujących (add/update/toggle) – po każdej mutacji automatyczne odświeżenie danych przez fetch
+- [x] Store jako jedyne źródło prawdy, UI zawsze pokazuje aktualny stan z backendu
+
 ## Do zrobienia
 
 - Finalizacja porządkowania katalogu projektu
-- Usunięcie zbędnych plików: BACKEND_README.md, POSTEP_I_TODO.md, PROJECT_PLAN.md, README.md (zastąpienie tym plikiem)
 - Dalsze uzupełnianie i aktualizacja zadań w tym pliku
 - Rozbudowa widoków i komponentów zgodnie z wymaganiami projektu
 - Utrzymanie spójności i kompletności projektu
+
 
 ### Zadania backendowe
 
 - Moduł Muzyczny:
 	- [x] `POST /api/music/releases` - do dodawania nowego wydania (z uploadem okładki i pliku muzycznego)
-	- [ ] `PATCH /api/music/releases/:id/splits` - do aktualizacji podziałów tantiem
-	- [ ] `POST /api/music/tasks` - do dodawania nowego zadania
-	- [ ] `PATCH /api/music/tasks/:id` - do zmiany statusu zadania
+	- [x] `PATCH /api/music/releases/:id/splits` - do aktualizacji podziałów tantiem
+	- [x] `POST /api/music/tasks` - do dodawania nowego zadania
+	- [x] `PATCH /api/music/tasks/:id` - do zmiany statusu zadania
 - Moduł Wydawniczy:
-	- [ ] `POST /api/publishing/books` - do dodawania nowej książki
-	- [ ] `PATCH /api/publishing/books/:id` - do aktualizacji danych książki
-	- [ ] `PATCH /api/publishing/books/:id/chapters/:chapterIndex` - do aktualizacji treści rozdziału
-	- [ ] `POST /api/publishing/tasks` - do dodawania nowego zadania
-	- [ ] `PATCH /api/publishing/tasks/:id` - do zmiany statusu zadania
+	- [x] `POST /api/publishing/books` - do dodawania nowej książki
+	- [x] `PATCH /api/publishing/books/:id` - do aktualizacji danych książki (w tym rozdziałów)
+	- [x] `PATCH /api/publishing/books/:id/chapters/:chapterIndex` - do aktualizacji treści rozdziału (obsługiwane przez PATCH /books/:id z chapters)
+	- [x] `POST /api/publishing/tasks` - do dodawania nowego zadania
+	- [x] `PATCH /api/publishing/tasks/:id` - do zmiany statusu zadania
 - Integracja z AWS S3 (Przesyłanie Plików):
 	- [x] Instalacja `aws-sdk`
 	- [x] Stworzenie endpointu `GET /api/s3-presigned-url`, który generuje bezpieczny, tymczasowy link do przesyłania plików
 	- [x] Implementacja logiki po stronie frontendu do przesyłania plików bezpośrednio do S3 przy użyciu wygenerowanego linku
-	- [ ] Wdrożenie uploadu ilustracji do książek oraz plików do rozdziałów (kolejny krok)
+	- [x] Wdrożenie uploadu ilustracji do książek oraz plików do rozdziałów (frontend, S3, ChaptersPage, ChapterEditForm)
 - Dodanie podstawowej walidacji przychodzących danych
 - Zorganizowanie kodu w moduły (np. osobne pliki dla `routes`, `controllers`)
 - Przygotowanie aplikacji do wdrożenia na darmowej platformie (np. Vercel, Render)

@@ -38,7 +38,7 @@ const ChaptersPage: React.FC<ChaptersPageProps> = ({ bookId, onBack }: ChaptersP
       <button onClick={() => addChapter(bookId)} style={{ background: '#2196F3', color: 'white', padding: '8px 16px', border: 'none', borderRadius: 4, marginBottom: 24 }}>Dodaj rozdział</button>
       {editingIndex !== null && (
         <ChapterEditForm
-          chapter={book.chapters[editingIndex]}
+          chapter={book.chapters[editingIndex]!}
           onSave={async (updated: BookChapter) => {
             await updateChapterContent(bookId, editingIndex, updated.content);
             // Dodatkowo zaktualizuj pliki (imageUrl, audioUrl, fileUrl)

@@ -179,47 +179,15 @@ export const useAppStore = create<AppStore>((set, get) => ({
     books: [],
     tasks: [],
   },
-  initializeApp: () => {
-    // Inicjalizacja z przykładowymi danymi
-    const mockData = {
-      music: {
-        releases: [
-          { id: 1, title: 'Cybernetic Dreams', artist: 'Void Runner', status: 'Live' as const, genre: 'Darksynth', releaseDate: '2023-10-26', splits: [{ name: 'Void Runner', share: '100' }] }
-        ],
-        tasks: [
-          { id: 101, text: 'Master final track for EP', dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], completed: false },
-          { id: 102, text: 'Design cover art concepts', dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], completed: true }
-        ]
-      },
-      publishing: {
-        books: [
-          {
-            id: 201,
-            title: 'The Last Datastream',
-            author: 'Alex Chen',
-            genre: 'Sci-Fi',
-            status: 'Published' as const,
-            rights: { territorial: true, translation: true, adaptation: false, drm: true },
-            splits: [{ name: 'Alex Chen', share: '100' }],
-            chapters: [{ title: 'Chapter 1', content: 'The rain fell in digital sheets across the neon-drenched canyons of Neo-Kyoto. Below, Detective Kaito navigated his spinner through the chaotic sky-lanes, the city\'s holographic ghosts flickering against his cockpit\'s viewport.' }],
-            blurb: 'In a city that never sleeps, a reclusive hacker uncovers a conspiracy that could rewrite reality itself.',
-            keywords: 'cyberpunk, sci-fi, conspiracy, hacker, future, dystopian, neon',
-            illustrations: [],
-            coverImageUrl: ''
-          }
-        ],
-        tasks: [
-          { id: 202, text: 'Outline sequel novel', dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], completed: false }
-        ]
-      },
-      onboardingComplete: false
-    };
-    set({
-      music: mockData.music,
-      publishing: mockData.publishing,
-      onboarding: { ...get().onboarding, onboardingComplete: mockData.onboardingComplete },
-      isInitialized: true,
-    });
+  initializeApp: async () => {
+    // Globalna inicjalizacja: pobierz releases, books, tasks z backendu
+    await Promise.all([
+      get().fetchReleases(),
+      get().fetchMusicTasks(),
+      get().fetchBooks(),
+      get().fetchPublishingTasks(),
+    ]);
+    set({ isInitialized: true });
   },
   setView: (view) => set({ view }),
   setLoading: (key, value) => set(state => ({ loading: { ...state.loading, [key]: value } })),
@@ -240,15 +208,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   addRelease: async (releaseData) => {
     try {
-      // Wywołanie backendu
-      const response = await import('../api/client').then(m => m.musicApi.create(releaseData));
-      const newRelease = response.data.release;
-      set(state => ({
-        music: {
-          ...state.music,
-          releases: [...state.music.releases, newRelease]
-        }
-      }));
+      await import('../api/client').then(m => m.musicApi.create(releaseData));
+      await get().fetchReleases();
       get().addToast('Wydanie zostało dodane!', 'success');
     } catch (error: any) {
       get().addToast('Błąd podczas dodawania wydania: ' + (error?.response?.data?.message || error.message), 'error');
@@ -257,12 +218,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   updateMusicSplits: async (releaseId, splits) => {
     try {
       await import('../api/client').then(m => m.musicApi.updateSplits(releaseId, splits));
-      set(state => ({
-        music: {
-          ...state.music,
-          releases: state.music.releases.map(r => r.id === releaseId ? { ...r, splits } : r)
-        }
-      }));
+      await get().fetchReleases();
       get().addToast('Podziały zostały zaktualizowane.', 'success');
     } catch (error: any) {
       get().addToast('Błąd podczas aktualizacji podziałów: ' + (error?.response?.data?.message || error.message), 'error');
@@ -284,14 +240,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   addMusicTask: async (text, dueDate) => {
     try {
-      const response = await import('../api/client').then(m => m.tasksApi.create({ text, dueDate }));
-      const newTask = response.data.task;
-      set(state => ({
-        music: {
-          ...state.music,
-          tasks: [...state.music.tasks, newTask]
-        }
-      }));
+      await import('../api/client').then(m => m.tasksApi.create({ text, dueDate }));
+      await get().fetchMusicTasks();
       get().addToast('Dodano zadanie muzyczne.', 'success');
     } catch (error: any) {
       get().addToast('Błąd podczas dodawania zadania: ' + (error?.response?.data?.message || error.message), 'error');
@@ -300,12 +250,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   toggleMusicTask: async (id, completed) => {
     try {
       await import('../api/client').then(m => m.tasksApi.update(id, { completed }));
-      set(state => ({
-        music: {
-          ...state.music,
-          tasks: state.music.tasks.map(t => t.id === id ? { ...t, completed } : t)
-        }
-      }));
+      await get().fetchMusicTasks();
       get().addToast('Status zadania zaktualizowany.', 'success');
     } catch (error: any) {
       get().addToast('Błąd podczas zmiany statusu zadania: ' + (error?.response?.data?.message || error.message), 'error');
@@ -328,15 +273,9 @@ export const useAppStore = create<AppStore>((set, get) => ({
   addBook: async (bookData) => {
     try {
       const response = await import('../api/client').then(m => m.apiClient.post('/publishing/books', bookData));
-      const newBook = response.data.book;
-      set(state => ({
-        publishing: {
-          ...state.publishing,
-          books: [...state.publishing.books, newBook]
-        }
-      }));
+      await get().fetchBooks();
       get().addToast('Dodano książkę.', 'success');
-      return newBook.id?.toString();
+      return response.data.book?.id?.toString();
     } catch (error: any) {
       get().addToast('Błąd podczas dodawania książki: ' + (error?.response?.data?.message || error.message), 'error');
       return undefined;
@@ -345,20 +284,20 @@ export const useAppStore = create<AppStore>((set, get) => ({
   updateBook: async (bookId, data) => {
     try {
       await import('../api/client').then(m => m.apiClient.patch(`/publishing/books/${bookId}`, data));
-      set(state => ({
-        publishing: {
-          ...state.publishing,
-          books: state.publishing.books.map(b => b.id === bookId ? { ...b, ...data } : b)
-        }
-      }));
+      await get().fetchBooks();
       get().addToast('Książka zaktualizowana.', 'success');
     } catch (error: any) {
       get().addToast('Błąd podczas aktualizacji książki: ' + (error?.response?.data?.message || error.message), 'error');
     }
   },
-  updateBookSplits: (bookId, splits) => {
-    set(state => ({ publishing: { ...state.publishing, books: state.publishing.books.map(b => b.id === bookId ? { ...b, splits } : b) } }));
-    get().addToast('Splits updated successfully.', 'success');
+  updateBookSplits: async (bookId, splits) => {
+    try {
+      await import('../api/client').then(m => m.apiClient.patch(`/publishing/books/${bookId}/splits`, { splits }));
+      await get().fetchBooks();
+      get().addToast('Splits updated successfully.', 'success');
+    } catch (error: any) {
+      get().addToast('Błąd podczas aktualizacji splits: ' + (error?.response?.data?.message || error.message), 'error');
+    }
   },
   addChapter: (bookId) => {
     const book = get().publishing.books.find(b => b.id === bookId);
@@ -370,12 +309,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   updateChapterContent: async (bookId, chapterIndex, newContent) => {
     try {
       await import('../api/client').then(m => m.apiClient.patch(`/publishing/books/${bookId}/chapters/${chapterIndex}`, { content: newContent }));
-      const book = get().publishing.books.find(b => b.id === bookId);
-      if (!book || !book.chapters[chapterIndex]) return;
-      const updatedChapters = book.chapters.map((chapter, index) =>
-        index === chapterIndex ? { ...chapter, content: newContent } : chapter
-      );
-      set(state => ({ publishing: { ...state.publishing, books: state.publishing.books.map(b => b.id === bookId ? { ...b, chapters: updatedChapters } : b) } }));
+      await get().fetchBooks();
       get().addToast('Treść rozdziału zaktualizowana.', 'success');
     } catch (error: any) {
       get().addToast('Błąd podczas aktualizacji rozdziału: ' + (error?.response?.data?.message || error.message), 'error');
@@ -400,14 +334,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   addPublishingTask: async (text, dueDate) => {
     try {
-      const response = await import('../api/client').then(m => m.apiClient.post('/publishing/tasks', { text, dueDate }));
-      const newTask = response.data.task;
-      set(state => ({
-        publishing: {
-          ...state.publishing,
-          tasks: [...state.publishing.tasks, newTask]
-        }
-      }));
+      await import('../api/client').then(m => m.apiClient.post('/publishing/tasks', { text, dueDate }));
+      await get().fetchPublishingTasks();
       get().addToast('Dodano zadanie wydawnicze.', 'success');
     } catch (error: any) {
       get().addToast('Błąd podczas dodawania zadania wydawniczego: ' + (error?.response?.data?.message || error.message), 'error');
@@ -416,12 +344,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   togglePublishingTask: async (id, completed) => {
     try {
       await import('../api/client').then(m => m.apiClient.patch(`/publishing/tasks/${id}`, { completed }));
-      set(state => ({
-        publishing: {
-          ...state.publishing,
-          tasks: state.publishing.tasks.map(t => t.id === id ? { ...t, completed } : t)
-        }
-      }));
+      await get().fetchPublishingTasks();
       get().addToast('Status zadania wydawniczego zaktualizowany.', 'success');
     } catch (error: any) {
       get().addToast('Błąd podczas zmiany statusu zadania wydawniczego: ' + (error?.response?.data?.message || error.message), 'error');
