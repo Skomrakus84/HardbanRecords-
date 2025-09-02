@@ -68,9 +68,12 @@ interface BookRights {
   drm: boolean;
 }
 
-interface BookChapter {
+export interface BookChapter {
   title: string;
   content: string;
+  imageUrl?: string;
+  audioUrl?: string;
+  fileUrl?: string;
 }
 interface BookIllustration {
   url: string;
@@ -92,7 +95,7 @@ interface Book {
   coverImageUrl: string;
 }
 
-interface AppState {
+export interface AppState {
   isInitialized: boolean;
   view: View;
   loading: LoadingState;
