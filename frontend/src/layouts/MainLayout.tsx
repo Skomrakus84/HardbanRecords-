@@ -1,5 +1,5 @@
-import { Box, Flex, Link as ChakraLink } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 
 interface MainLayoutProps {
@@ -10,27 +10,68 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <>
       <Header />
-      <Flex h="100vh">
+      <div style={{ display: 'flex', minHeight: '100vh' }}>
         {/* Sidebar Navigation */}
-        <Box w="250px" bg="gray.100" p={4}>
+        <div style={{
+          width: '250px',
+          background: '#f5f5f5',
+          padding: '16px',
+          borderRight: '1px solid #ddd'
+        }}>
           <nav>
-            <ChakraLink as={RouterLink} to="/" display="block" mb={2}>
+            <Link 
+              to="/" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '8px', 
+                color: '#333',
+                textDecoration: 'none',
+                padding: '8px',
+                borderRadius: '4px'
+              }}
+            >
               Home
-            </ChakraLink>
-            <ChakraLink as={RouterLink} to="/music" display="block" mb={2}>
+            </Link>
+            <Link 
+              to="/music" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '8px', 
+                color: '#333',
+                textDecoration: 'none',
+                padding: '8px',
+                borderRadius: '4px'
+              }}
+            >
               Music Publishing
-            </ChakraLink>
-            <ChakraLink as={RouterLink} to="/publishing" display="block" mb={2}>
+            </Link>
+            <Link 
+              to="/publishing" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '8px', 
+                color: '#333',
+                textDecoration: 'none',
+                padding: '8px',
+                borderRadius: '4px'
+              }}
+            >
               Digital Publishing
-            </ChakraLink>
+            </Link>
           </nav>
-        </Box>
+        </div>
         
         {/* Main Content */}
-        <Box flex="1" p={4}>
+        <div style={{ flex: 1, padding: '16px' }}>
           {children}
-        </Box>
-      </Flex>
+        </div>
+      </div>
+
+      <style jsx>{`
+        a:hover {
+          background-color: #e0e0e0 !important;
+        }
+      `}</style>
     </>
   );
 };
