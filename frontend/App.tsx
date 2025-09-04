@@ -6,7 +6,7 @@ import ToastContainer from './components/ToastContainer';
 import FullScreenLoader from './components/FullScreenLoader';
 import OnboardingTour, { TOUR_STEPS } from './components/OnboardingTour';
 import MusicPublishingView from './pages/music/MusicPage';
-import DigitalPublishingAIView from '../frontend/src/pages/publishing/PublishingPage';
+import DigitalPublishingAIView from './pages/publishing/PublishingPage';
 import { useAppStore } from './store/appStore';
 
 export default function App() {

@@ -42,7 +42,7 @@
     "src/**/*.tsx",
     "src/**/*.js",
     "src/**/*.jsx"
-  ],
+, "frontend/src/pages/publishing", "frontend/src/pages/HomePage.tsx", "frontend/src/pages/SettingsPage.tsx", "frontend/src/pages/TasksPage.tsx"  ],
   "exclude": [
     "node_modules",
     "dist",
