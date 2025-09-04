@@ -1,37 +1,46 @@
-// Plik: backend/server.cjs
-
-// --- Krok 1: Importy ---
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// --- Krok 2: Import tras (routes) ---
 const apiRoutes = require('./routes/api.cjs');
 const musicRoutes = require('./routes/music.cjs');
 const publishingRoutes = require('./routes/publishing.cjs');
-const aiRoutes = require('./routes/ai.cjs'); // NOWY IMPORT
+const aiRoutes = require('./routes/ai.cjs');
+const authRoutes = require('./routes/auth.cjs');
+const groqRoutes = require('./routes/groq.cjs');
+const adminRoutes = require('./routes/admin.cjs');
+const errorHandler = require('./middleware/errorHandler.cjs');
 
-// --- Krok 3: Inicjalizacja Aplikacji i Middleware ---
 const app = express();
+
 app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'));
 
-// --- Krok 4: Definicja portu ---
-const PORT = process.env.PORT || 3001;
-
-// --- Krok 5: Podłączenie tras do głównej aplikacji ---
-// Wszystkie trasy z api.cjs będą dostępne pod /api/...
-app.use('/api', apiRoutes); 
-// Wszystkie trasy z music.cjs będą dostępne pod /api/music/...
+app.use('/api', apiRoutes);
 app.use('/api/music', musicRoutes);
-// Wszystkie trasy z publishing.cjs będą dostępne pod /api/publishing/...
 app.use('/api/publishing', publishingRoutes);
-// Wszystkie trasy z ai.cjs będą dostępne pod /api/ai/...
-app.use('/api/ai', aiRoutes); // NOWA LINIA: Podłączamy trasy AI
+app.use('/api/ai', aiRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/groq', groqRoutes);
+app.use('/api/admin', adminRoutes);
 
-// --- Krok 6: Uruchomienie serwera ---
-app.listen(PORT, () => {
-  console.log(`Serwer działa i nasłuchuje na porcie ${PORT}`);
-  console.log('Połączone trasy: /api, /api/music, /api/publishing, /api/ai');
+// Globalny handler błędów (na końcu)
+app.use(errorHandler);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: 'Nie znaleziono zasobu.' });
 });
 
+// Uruchamiaj serwer tylko jeśli plik jest uruchamiany bezpośrednio
+if (require.main === module) {
+  app.listen(3001, () => {
+    console.log('Serwer działa i nasłuchuje na porcie 3001');
+    console.log('Połączone trasy: /api, /api/music, /api/publishing, /api/ai');
+  });
+}
+
+module.exports = app;

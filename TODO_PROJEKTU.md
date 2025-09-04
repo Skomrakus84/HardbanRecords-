@@ -57,7 +57,7 @@
 - [x] UserProfile (profil użytkownika)
 - [x] SettingsPage (ustawienia aplikacji)
 - [x] AnalyticsView (statystyki, wykresy)
-- [ ] AI/AssistantPanel (integracja AI, podpowiedzi)
+- [x] AI/AssistantPanel (integracja AI, podpowiedzi)
 - [x] NotificationBell (ikona powiadomień)
 - [x] ActivityLog (log aktywności)
 - [x] ErrorBoundary (obsługa błędów)
@@ -83,12 +83,20 @@
 - Stworzenie endpointu `GET /api/data` do pobierania całego stanu aplikacji (książki, wydania, zadania)
 - Implementacja mechanizmu CORS, aby umożliwić komunikację między frontendem a backendem
 
-
 ## Ostatnie postępy (wrzesień 2025)
 
 - [x] Globalna integracja Zustand store z backendem (fetch/add/update/delete przez API, usunięcie mocków, refaktoryzacja mutacji, pełna synchronizacja danych)
 - [x] Refaktoryzacja wszystkich operacji mutujących (add/update/toggle) – po każdej mutacji automatyczne odświeżenie danych przez fetch
 - [x] Store jako jedyne źródło prawdy, UI zawsze pokazuje aktualny stan z backendu
+- [x] Walidacja danych wejściowych (express-validator) dla releases, books, tasks
+- [x] Middleware JWT – ochrona endpointów, generowanie i odświeżanie tokenów
+- [x] Obsługa ról użytkowników (admin, user) i ograniczenia dostępu
+- [x] Globalny handler błędów i czytelne logowanie (morgan)
+- [x] Endpointy rejestracji, logowania, odświeżania tokenów
+- [x] Integracja z bazą danych (tabela users, migracja SQL)
+- [x] Rate limiting i brute-force protection na logowanie/rejestrację
+- [x] Testy i walidacja całego flow użytkownika (rejestracja, logowanie, uprawnienia)
+- [x] Refaktoryzacja kodu backendu, usunięcie błędów składniowych w trasach music.cjs i publishing.cjs
 
 ## Do zrobienia
 
@@ -101,21 +109,21 @@
 ### Zadania backendowe
 
 - Moduł Muzyczny:
-	- [x] `POST /api/music/releases` - do dodawania nowego wydania (z uploadem okładki i pliku muzycznego)
-	- [x] `PATCH /api/music/releases/:id/splits` - do aktualizacji podziałów tantiem
-	- [x] `POST /api/music/tasks` - do dodawania nowego zadania
-	- [x] `PATCH /api/music/tasks/:id` - do zmiany statusu zadania
+    - [x] `POST /api/music/releases` - do dodawania nowego wydania (z uploadem okładki i pliku muzycznego)
+    - [x] `PATCH /api/music/releases/:id/splits` - do aktualizacji podziałów tantiem
+    - [x] `POST /api/music/tasks` - do dodawania nowego zadania
+    - [x] `PATCH /api/music/tasks/:id` - do zmiany statusu zadania
 - Moduł Wydawniczy:
-	- [x] `POST /api/publishing/books` - do dodawania nowej książki
-	- [x] `PATCH /api/publishing/books/:id` - do aktualizacji danych książki (w tym rozdziałów)
-	- [x] `PATCH /api/publishing/books/:id/chapters/:chapterIndex` - do aktualizacji treści rozdziału (obsługiwane przez PATCH /books/:id z chapters)
-	- [x] `POST /api/publishing/tasks` - do dodawania nowego zadania
-	- [x] `PATCH /api/publishing/tasks/:id` - do zmiany statusu zadania
+    - [x] `POST /api/publishing/books` - do dodawania nowej książki
+    - [x] `PATCH /api/publishing/books/:id` - do aktualizacji danych książki (w tym rozdziałów)
+    - [x] `PATCH /api/publishing/books/:id/chapters/:chapterIndex` - do aktualizacji treści rozdziału (obsługiwane przez PATCH /books/:id z chapters)
+    - [x] `POST /api/publishing/tasks` - do dodawania nowego zadania
+    - [x] `PATCH /api/publishing/tasks/:id` - do zmiany statusu zadania
 - Integracja z AWS S3 (Przesyłanie Plików):
-	- [x] Instalacja `aws-sdk`
-	- [x] Stworzenie endpointu `GET /api/s3-presigned-url`, który generuje bezpieczny, tymczasowy link do przesyłania plików
-	- [x] Implementacja logiki po stronie frontendu do przesyłania plików bezpośrednio do S3 przy użyciu wygenerowanego linku
-	- [x] Wdrożenie uploadu ilustracji do książek oraz plików do rozdziałów (frontend, S3, ChaptersPage, ChapterEditForm)
+    - [x] Instalacja `aws-sdk`
+    - [x] Stworzenie endpointu `GET /api/s3-presigned-url`, który generuje bezpieczny, tymczasowy link do przesyłania plików
+    - [x] Implementacja logiki po stronie frontendu do przesyłania plików bezpośrednio do S3 przy użyciu wygenerowanego linku
+    - [x] Wdrożenie uploadu ilustracji do książek oraz plików do rozdziałów (frontend, S3, ChaptersPage, ChapterEditForm)
 - Dodanie podstawowej walidacji przychodzących danych
 - Zorganizowanie kodu w moduły (np. osobne pliki dla `routes`, `controllers`)
 - Przygotowanie aplikacji do wdrożenia na darmowej platformie (np. Vercel, Render)

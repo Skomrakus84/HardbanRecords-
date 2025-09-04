@@ -1,10 +1,14 @@
 // Plik: backend/routes/ai.cjs
 const express = require('express');
 const { GoogleGenAI } = require("@google/genai");
+const authorizeRoles = require('../middleware/authRole.cjs');
 const router = express.Router();
 
 // Inicjalizujemy AI tutaj, na backendzie, używając klucza ze zmiennych środowiskowych
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+// Zabezpieczenie wszystkich tras w tym pliku dla ról user, editor, admin
+router.use(authorizeRoles('user', 'editor', 'admin'));
 
 // Endpoint do generowania treści (tekstu, JSON, itp.)
 router.post('/generate-content', async (req, res) => {
@@ -44,6 +48,16 @@ router.post('/generate-images', async (req, res) => {
         console.error("Błąd podczas komunikacji z Gemini API (generate-images):", error);
         res.status(500).json({ success: false, message: 'Błąd serwera podczas generowania obrazu.', error: error.message });
     }
+});
+
+// Dostęp do AI - tylko editor i admin
+router.post('/generate', authorizeRoles('editor', 'admin'), (req, res) => {
+  // ...kod...
+});
+
+// Historia AI - tylko admin
+router.get('/history', authorizeRoles('admin'), (req, res) => {
+  // ...kod...
 });
 
 module.exports = router;

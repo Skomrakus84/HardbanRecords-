@@ -4,6 +4,7 @@ const router = express.Router();
 const db = require('../db.cjs');
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const authorizeRoles = require('../middleware/authRole.cjs');
 
 // --- Konfiguracja Klienta S3 ---
 const s3Client = new S3Client({
@@ -86,6 +87,24 @@ router.get('/s3-presigned-url', async (req, res) => {
         console.error("Błąd podczas generowania presigned URL:", error);
         res.status(500).json({ message: 'Nie udało się wygenerować adresu URL.' });
     }
+});
+
+// --- Endpointy Admina ---
+
+router.get('/admin-only', authorizeRoles('admin'), (req, res) => {
+    res.json({ success: true, message: 'Tylko admin widzi tę trasę.' });
+});
+
+router.get('/editor-or-admin', authorizeRoles('admin', 'editor'), (req, res) => {
+    res.json({ success: true, message: 'Admin lub edytor widzi tę trasę.' });
+});
+
+router.get('/user', authorizeRoles('user', 'editor', 'admin'), (req, res) => {
+    res.json({ success: true, message: 'Każdy zalogowany użytkownik widzi tę trasę.' });
+});
+
+router.get('/guest', (req, res) => {
+    res.json({ success: true, message: 'Trasa publiczna.' });
 });
 
 module.exports = router;
