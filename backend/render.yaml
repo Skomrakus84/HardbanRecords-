@@ -1,13 +1,16 @@
-# Render.com backend service definition for Node.js Express
 services:
   - type: web
     name: hardbanrecords-backend
     env: node
     plan: free
     buildCommand: npm install
-    startCommand: node server.cjs
+    startCommand: npm start
     envVars:
       - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: REFRESH_TOKEN_SECRET
         sync: false
       - key: AWS_ACCESS_KEY_ID
         sync: false
@@ -17,5 +20,3 @@ services:
         sync: false
       - key: S3_BUCKET_NAME
         sync: false
-    autoDeploy: true
-    rootDir: backend
