@@ -1,14 +1,14 @@
-
 import React from 'react';
 import { useAppStore } from '../store/appStore';
 import AssistantPanel from '../components/AssistantPanel';
 
-const HomePage = () => {
+const HomePage: React.FC = () => {
   const { music, publishing, isLoading } = useAppStore();
 
   return (
     <div>
-      <h1 style={{ fontSize: '32px', marginBottom: '20px' }}>Dashboard</h1>
+      <h1 style={{ fontSize: '32px', marginBottom: '20px' }}>HardbanRecords-Lab</h1>
+      <p>Witamy w aplikacji!</p>
       {isLoading ? (
         <div>Loading dashboard data...</div>
       ) : (
