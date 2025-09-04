@@ -1,15 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  compress: true,
+  poweredByHeader: false,
   reactStrictMode: true,
-  images: {
-    domains: ['localhost', 's3.amazonaws.com'],
-  },
-  typescript: {
-    ignoreBuildErrors: true, // Temporarily ignore TS errors during build
-  },
-  eslint: {
-    ignoreDuringBuilds: true, // Temporarily ignore ESLint errors during build
+  swcMinify: true,
+  experimental: {
+    optimizeFonts: true,
+    optimizeImages: true,
   },
 }
 
-module.exports = nextConfig;
+module.exports = nextConfig

@@ -1,6 +1,12 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { useAppStore } from '../store/appStore';
 import AssistantPanel from '../components/AssistantPanel';
+
+// Zamień statyczne importy na dynamiczne dla ciężkich komponentów
+const DashboardCard = dynamic(() => import('../components/DashboardCard'), {
+  loading: () => <p>Loading...</p>
+})
 
 const HomePage: React.FC = () => {
   const { music, publishing, isLoading } = useAppStore();
