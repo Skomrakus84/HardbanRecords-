@@ -1,0 +1,15 @@
+{
+  "/_app": "pages/_app.js",
+  "/SettingsPage": "pages/SettingsPage.js",
+  "/HomePage": "pages/HomePage.js",
+  "/": "pages/index.js",
+  "/TasksPage": "pages/TasksPage.js",
+  "/music/MusicPage": "pages/music/MusicPage.js",
+  "/_error": "pages/_error.js",
+  "/publishing/PublishingPage": "pages/publishing/PublishingPage.js",
+  "/publishing/ChaptersPage": "pages/publishing/ChaptersPage.js",
+  "/music/TasksView": "pages/music/TasksView.js",
+  "/music/ReleasesView": "pages/music/ReleasesView.js",
+  "/music/SplitsView": "pages/music/SplitsView.js",
+  "/_document": "pages/_document.js"
+}
