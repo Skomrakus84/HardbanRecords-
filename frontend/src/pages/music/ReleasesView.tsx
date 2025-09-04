@@ -200,7 +200,7 @@ export const ReleasesView = ({ onSelectRelease }: ReleasesViewProps) => {
 
   const handleDelete = useCallback(async (release: MusicRelease) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${release.title}" by ${release.artist}?`
+      `Are you sure you want to delete "${release.title}" by ${release.artist}?\n\nThis action cannot be undone.`
     );
     
     if (!confirmed) return;
@@ -208,6 +208,9 @@ export const ReleasesView = ({ onSelectRelease }: ReleasesViewProps) => {
     setDeletingIds(prev => new Set(prev).add(release.id));
     try {
       await deleteRelease(release.id);
+    } catch (err) {
+      // Error jest już obsłużony w store
+      console.error('Delete failed:', err);
     } finally {
       setDeletingIds(prev => {
         const newSet = new Set(prev);
@@ -221,13 +224,23 @@ export const ReleasesView = ({ onSelectRelease }: ReleasesViewProps) => {
     onSelectRelease?.(release);
   }, [onSelectRelease]);
 
-  // Sortowanie releases - najnowsze pierwsze
+  // Sortowanie i filtrowanie releases
   const sortedReleases = useMemo(() => {
     return [...releases].sort((a, b) => {
+      // Najpierw po statusie (published na końcu)
+      const statusOrder = { draft: 0, pending: 1, published: 2, archived: 3 };
+      const statusDiff = (statusOrder[a.status as keyof typeof statusOrder] || 0) - 
+                        (statusOrder[b.status as keyof typeof statusOrder] || 0);
+      
+      if (statusDiff !== 0) return statusDiff;
+      
+      // Potem po dacie release (najnowsze pierwsze)
       if (a.releaseDate && b.releaseDate) {
         return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
       }
-      return 0;
+      
+      // Na końcu alfabetycznie po tytule
+      return a.title.localeCompare(b.title);
     });
   }, [releases]);
 
@@ -498,81 +511,5 @@ export const ReleasesView = ({ onSelectRelease }: ReleasesViewProps) => {
         }
       `}</style>
     </div>
-  );
-};
-
-export const ReleasesView = ({ onSelectRelease }: ReleasesViewProps) => {
-  const { releases } = useAppStore(state => state.music);
-  const { deleteRelease, isLoading, error, clearError } = useAppStore();
-  const [isAddingNew, setIsAddingNew] = useState(false);
-  const [deletingIds, setDeletingIds] = useState<Set<number>>(new Set());
-
-  const handleDelete = useCallback(async (release: MusicRelease) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete "${release.title}" by ${release.artist}?\n\nThis action cannot be undone.`
-    );
-    
-    if (!confirmed) return;
-
-    setDeletingIds(prev => new Set(prev).add(release.id));
-    try {
-      await deleteRelease(release.id);
-    } catch (err) {
-      // Error jest już obsłużony w store
-      console.error('Delete failed:', err);
-    } finally {
-      setDeletingIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(release.id);
-        return newSet;
-      });
-    }
-  }, [deleteRelease]);
-
-  const handleSelectRelease = useCallback((release: MusicRelease) => {
-    onSelectRelease?.(release);
-  }, [onSelectRelease]);
-
-  // Sortowanie i filtrowanie releases
-  const sortedReleases = useMemo(() => {
-    return [...releases].sort((a, b) => {
-      // Najpierw po statusie (published na końcu)
-      const statusOrder = { draft: 0, pending: 1, published: 2, archived: 3 };
-      const statusDiff = (statusOrder[a.status as keyof typeof statusOrder] || 0) - 
-                        (statusOrder[b.status as keyof typeof statusOrder] || 0);
-      
-      if (statusDiff !== 0) return statusDiff;
-      
-      // Potem po dacie release (najnowsze pierwsze)
-      if (a.releaseDate && b.releaseDate) {
-        return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
-      }
-      
-      // Na końcu alfabetycznie po tytule
-      return a.title.localeCompare(b.title);
-    });
-  }, [releases]);
-
-  const handleAddNew = useCallback(() => {
-    setIsAddingNew(true);
-  }, []);
-
-  const handleCloseForm = useCallback(() => {
-    setIsAddingNew(false);
-  }, []);
-
-  return (
-    <ReleasesView 
-      releases={sortedReleases}
-      onSelectRelease={handleSelectRelease}
-      onDelete={handleDelete}
-      onAddNew={handleAddNew}
-      onCloseForm={handleCloseForm}
-      isAddingNew={isAddingNew}
-      deletingIds={deletingIds}
-      isLoading={isLoading}
-      error={error}
-      clearError={clearError}
-    />
   );
 };
