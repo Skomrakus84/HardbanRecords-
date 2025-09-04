@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import Header from '../components/Header';
 
 interface MainLayoutProps {
@@ -20,7 +20,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         }}>
           <nav>
             <Link 
-              to="/" 
+              href="/" 
               style={{ 
                 display: 'block', 
                 marginBottom: '8px', 
@@ -33,7 +33,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
               Home
             </Link>
             <Link 
-              to="/music" 
+              href="/music" 
               style={{ 
                 display: 'block', 
                 marginBottom: '8px', 
@@ -46,7 +46,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
               Music Publishing
             </Link>
             <Link 
-              to="/publishing" 
+              href="/publishing" 
               style={{ 
                 display: 'block', 
                 marginBottom: '8px', 
@@ -57,6 +57,19 @@ const MainLayout = ({ children }: MainLayoutProps) => {
               }}
             >
               Digital Publishing
+            </Link>
+            <Link 
+              href="/settings" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '8px', 
+                color: '#333',
+                textDecoration: 'none',
+                padding: '8px',
+                borderRadius: '4px'
+              }}
+            >
+              Settings
             </Link>
           </nav>
         </div>

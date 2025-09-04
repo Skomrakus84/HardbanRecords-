@@ -33,12 +33,6 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
-// Validate ../../src/pages/SettingsPage.tsx
-{
-  const handler = {} as typeof import("../../src/pages/SettingsPage.js")
-  handler satisfies PagesPageConfig
-}
-
 // Validate ../../src/pages/TasksPage.tsx
 {
   const handler = {} as typeof import("../../src/pages/TasksPage.js")
@@ -51,27 +45,9 @@ type PagesPageConfig = {
   handler satisfies PagesPageConfig
 }
 
-// Validate ../../src/pages/music/MusicPage.tsx
+// Validate ../../src/pages/music/index.tsx
 {
-  const handler = {} as typeof import("../../src/pages/music/MusicPage.js")
-  handler satisfies PagesPageConfig
-}
-
-// Validate ../../src/pages/music/ReleasesView.tsx
-{
-  const handler = {} as typeof import("../../src/pages/music/ReleasesView.js")
-  handler satisfies PagesPageConfig
-}
-
-// Validate ../../src/pages/music/SplitsView.tsx
-{
-  const handler = {} as typeof import("../../src/pages/music/SplitsView.js")
-  handler satisfies PagesPageConfig
-}
-
-// Validate ../../src/pages/music/TasksView.tsx
-{
-  const handler = {} as typeof import("../../src/pages/music/TasksView.js")
+  const handler = {} as typeof import("../../src/pages/music/index.js")
   handler satisfies PagesPageConfig
 }
 
@@ -84,6 +60,12 @@ type PagesPageConfig = {
 // Validate ../../src/pages/publishing/PublishingPage.tsx
 {
   const handler = {} as typeof import("../../src/pages/publishing/PublishingPage.js")
+  handler satisfies PagesPageConfig
+}
+
+// Validate ../../src/pages/settings.tsx
+{
+  const handler = {} as typeof import("../../src/pages/settings.js")
   handler satisfies PagesPageConfig
 }
 

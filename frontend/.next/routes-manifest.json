@@ -33,28 +33,10 @@
       "namedRegex": "^/HomePage(?:/)?$"
     },
     {
-      "page": "/music/MusicPage",
-      "regex": "^/music/MusicPage(?:/)?$",
+      "page": "/music",
+      "regex": "^/music(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/music/MusicPage(?:/)?$"
-    },
-    {
-      "page": "/music/ReleasesView",
-      "regex": "^/music/ReleasesView(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/music/ReleasesView(?:/)?$"
-    },
-    {
-      "page": "/music/SplitsView",
-      "regex": "^/music/SplitsView(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/music/SplitsView(?:/)?$"
-    },
-    {
-      "page": "/music/TasksView",
-      "regex": "^/music/TasksView(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/music/TasksView(?:/)?$"
+      "namedRegex": "^/music(?:/)?$"
     },
     {
       "page": "/publishing/ChaptersPage",
@@ -69,10 +51,10 @@
       "namedRegex": "^/publishing/PublishingPage(?:/)?$"
     },
     {
-      "page": "/SettingsPage",
-      "regex": "^/SettingsPage(?:/)?$",
+      "page": "/settings",
+      "regex": "^/settings(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/SettingsPage(?:/)?$"
+      "namedRegex": "^/settings(?:/)?$"
     },
     {
       "page": "/TasksPage",
