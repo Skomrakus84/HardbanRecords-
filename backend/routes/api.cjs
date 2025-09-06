@@ -2,18 +2,14 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db.cjs');
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { createClient } = require('@supabase/supabase-js');
 const authorizeRoles = require('../middleware/authRole.cjs');
 
-// --- Konfiguracja Klienta S3 ---
-const s3Client = new S3Client({
-    region: process.env.AWS_REGION,
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-});
+// --- Konfiguracja Klienta Supabase ---
+const supabase = createClient(
+    `https://fannbqzvjwyazeosectm.supabase.co`,
+    process.env.SUPABASE_SECRET_ACCESS_KEY
+);
 
 // Helpery
 const formatDate = (date) => {
@@ -65,23 +61,33 @@ router.get('/data', async (req, res) => {
     }
 });
 
-// GET /api/s3-presigned-url - Generowanie linku do uploadu
+// GET /api/s3-presigned-url - Generowanie linku do uploadu do Supabase Storage
 router.get('/s3-presigned-url', async (req, res) => {
     const { fileName, fileType } = req.query;
     if (!fileName || !fileType) {
         return res.status(400).json({ message: "Parametry 'fileName' i 'fileType' są wymagane." });
     }
+    
     const uniqueFileName = `${Date.now()}_${fileName}`;
-    const command = new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: uniqueFileName,
-        ContentType: fileType,
-    });
+    
     try {
-        const presignedUrl = await getSignedUrl(s3Client, command, { expiresIn: 60 });
+        // Generowanie presigned URL dla Supabase Storage
+        const { data, error } = await supabase.storage
+            .from(process.env.SUPABASE_BUCKET_NAME)
+            .createSignedUploadUrl(uniqueFileName, {
+                expiresIn: 60
+            });
+
+        if (error) {
+            console.error("Błąd podczas generowania presigned URL:", error);
+            return res.status(500).json({ message: 'Nie udało się wygenerować adresu URL.' });
+        }
+
+        const fileUrl = `https://fannbqzvjwyazeosectm.supabase.co/storage/v1/object/public/${process.env.SUPABASE_BUCKET_NAME}/${uniqueFileName}`;
+        
         res.json({
-            presignedUrl: presignedUrl,
-            fileUrl: `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${uniqueFileName}`
+            presignedUrl: data.signedUrl,
+            fileUrl: fileUrl
         });
     } catch (error) {
         console.error("Błąd podczas generowania presigned URL:", error);

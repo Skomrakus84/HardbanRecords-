@@ -1,0 +1,329 @@
+🎵 Moduł 1: Music Distribution
+Architektura Back-endu
+Core / Config
+apps/music-distribution/backend/src/server.ts – Punkt wejściowy backendu, uruchamia serwer Express/Node.
+apps/music-distribution/backend/src/app.ts – Konfiguracja aplikacji, middleware, rejestracja routerów.
+apps/music-distribution/backend/src/config/env.ts – Zmienne środowiskowe (API keys, baza, ustawienia).
+apps/music-distribution/backend/src/config/logger.ts – Logger do zapisu zdarzeń i błędów systemowych.
+apps/music-distribution/backend/src/config/rateLimiter.ts – Limity requestów API (antyspam, ochrona).
+apps/music-distribution/backend/src/config/cors.ts – Konfiguracja CORS dla różnych domen i klientów.
+
+Baza danych
+apps/music-distribution/backend/src/db/ormconfig.ts – Konfiguracja ORM (np. TypeORM/Prisma).
+apps/music-distribution/backend/src/db/migrations/0001_init.ts – Pierwsza migracja: tabele bazowe.
+apps/music-distribution/backend/src/db/migrations/0002_add_indexes.ts – Migracja dodająca indeksy.
+apps/music-distribution/backend/src/db/seeds/seedArtists.ts – Dane startowe dla artystów i testów.
+
+Typy i DTO
+apps/music-distribution/backend/src/types/global.d.ts – Typy globalne projektu.
+apps/music-distribution/backend/src/types/analytics.d.ts – Typy danych analitycznych i statystyk.
+apps/music-distribution/backend/src/types/royalties.d.ts – Typy danych finansowych/tantiem.
+apps/music-distribution/backend/src/dtos/artist.dto.ts – DTO dla operacji na artystach.
+apps/music-distribution/backend/src/dtos/release.dto.ts – DTO dla wydań muzycznych.
+apps/music-distribution/backend/src/dtos/track.dto.ts – DTO dla utworów.
+apps/music-distribution/backend/src/dtos/royalty.dto.ts – DTO raportów tantiem.
+apps/music-distribution/backend/src/dtos/payout.dto.ts – DTO konfiguracji i historii wypłat.
+
+Modele danych
+apps/music-distribution/backend/src/models/artist.model.ts – Model artysty (dane identyfikacyjne, biografia, linki).
+apps/music-distribution/backend/src/models/label.model.ts – Model wytwórni (nazwa, właściciel, powiązania).
+apps/music-distribution/backend/src/models/release.model.ts – Model wydania (album, EP, singiel).
+apps/music-distribution/backend/src/models/track.model.ts – Model utworu (tytuł, ISRC, długość, pliki).
+apps/music-distribution/backend/src/models/trackContributor.model.ts – Model współtwórców i ich ról.
+apps/music-distribution/backend/src/models/isrc.model.ts – Model kodów ISRC dla identyfikacji nagrań.
+apps/music-distribution/backend/src/models/upc.model.ts – Model kodów UPC dla wydawnictw.
+apps/music-distribution/backend/src/models/distributionChannel.model.ts – Model platform dystrybucyjnych.
+apps/music-distribution/backend/src/models/ugcPolicy.model.ts – Polityka User Generated Content (np. Content ID).
+apps/music-distribution/backend/src/models/royaltyStatement.model.ts – Raport tantiem z platform.
+apps/music-distribution/backend/src/models/royaltySplit.model.ts – Podział procentowy przychodów.
+apps/music-distribution/backend/src/models/payoutMethod.model.ts – Metody wypłat (Stripe, PayPal).
+apps/music-distribution/backend/src/models/expense.model.ts – Model kosztów związanych z wydaniem.
+apps/music-distribution/backend/src/models/recoupment.model.ts – Rozliczanie inwestycji i kosztów.
+apps/music-distribution/backend/src/models/notification.model.ts – Powiadomienia systemowe dla artystów.
+apps/music-distribution/backend/src/models/auditLog.model.ts – Historia akcji użytkowników (log audytowy).
+
+Repositories
+apps/music-distribution/backend/src/repositories/artist.repository.ts – Repozytorium artystów.
+apps/music-distribution/backend/src/repositories/release.repository.ts – Repozytorium wydań muzycznych.
+apps/music-distribution/backend/src/repositories/track.repository.ts – Repozytorium utworów.
+apps/music-distribution/backend/src/repositories/royalty.repository.ts – Repozytorium tantiem.
+apps/music-distribution/backend/src/repositories/channel.repository.ts – Repozytorium kanałów dystrybucji.
+
+Walidacja
+apps/music-distribution/backend/src/validators/metadata.validator.ts – Walidacja metadanych wydań.
+apps/music-distribution/backend/src/validators/release.validator.ts – Walidacja danych wydania.
+apps/music-distribution/backend/src/validators/track.validator.ts – Walidacja danych utworu.
+apps/music-distribution/backend/src/validators/splits.validator.ts – Walidacja podziałów tantiem.
+apps/music-distribution/backend/src/validators/payout.validator.ts – Walidacja konfiguracji wypłat.
+
+Mapery
+apps/music-distribution/backend/src/mappers/release.mapper.ts – Konwersja danych release → DTO.
+apps/music-distribution/backend/src/mappers/track.mapper.ts – Konwersja danych track → DTO.
+apps/music-distribution/backend/src/mappers/royalty.mapper.ts – Konwersja danych royalty → DTO.
+
+Serwisy biznesowe
+apps/music-distribution/backend/src/services/metadataValidator.service.ts – Sprawdzanie poprawności metadanych.
+apps/music-distribution/backend/src/services/release.service.ts – Obsługa wydań muzycznych.
+apps/music-distribution/backend/src/services/track.service.ts – Obsługa utworów muzycznych.
+apps/music-distribution/backend/src/services/distribution.service.ts – Wysyłanie wydań do serwisów.
+apps/music-distribution/backend/src/services/ugcPolicy.service.ts – Obsługa praw UGC/Content ID.
+apps/music-distribution/backend/src/services/royaltyIngestion.service.ts – Import raportów tantiem.
+apps/music-distribution/backend/src/services/royaltyCalculation.service.ts – Obliczanie tantiem.
+apps/music-distribution/backend/src/services/recoupment.service.ts – Rozliczanie kosztów i przychodów.
+apps/music-distribution/backend/src/services/payout.service.ts – Obsługa wypłat do artystów.
+apps/music-distribution/backend/src/services/notification.service.ts – System powiadomień.
+apps/music-distribution/backend/src/services/profileSync.service.ts – Synchronizacja profili artystów z platformami.
+
+Integracje
+apps/music-distribution/backend/src/integrations/channels/spotify.adapter.ts – Integracja z API Spotify.
+apps/music-distribution/backend/src/integrations/channels/appleMusic.adapter.ts – Integracja z Apple Music.
+apps/music-distribution/backend/src/integrations/channels/youtubeMusic.adapter.ts – Integracja z YouTube Music.
+apps/music-distribution/backend/src/integrations/channels/tidal.adapter.ts – Integracja z Tidal.
+apps/music-distribution/backend/src/integrations/channels/amazonMusic.adapter.ts – Integracja z Amazon Music.
+apps/music-distribution/backend/src/integrations/channels/deezer.adapter.ts – Integracja z Deezer.
+apps/music-distribution/backend/src/integrations/ugc/youtubeContentId.adapter.ts – Obsługa YouTube Content ID.
+apps/music-distribution/backend/src/integrations/ugc/facebookRightsManager.adapter.ts – Integracja z Facebook Rights Manager.
+apps/music-distribution/backend/src/integrations/ugc/tiktokSoundLibrary.adapter.ts – Integracja z TikTok Sound Library.
+apps/music-distribution/backend/src/integrations/pros-cmos/commonWorksRegistration.adapter.ts – Rejestracja utworów w PRO/CMO.
+apps/music-distribution/backend/src/integrations/payments/stripe.adapter.ts – Obsługa Stripe.
+apps/music-distribution/backend/src/integrations/payments/paypal.adapter.ts – Obsługa PayPal.
+apps/music-distribution/backend/src/integrations/payments/wise.adapter.ts – Obsługa Wise.
+
+Kontrolery
+apps/music-distribution/backend/src/controllers/distribution.controller.ts – API dystrybucji muzyki.
+apps/music-distribution/backend/src/controllers/release.controller.ts – API operacji na wydaniach.
+apps/music-distribution/backend/src/controllers/track.controller.ts – API operacji na utworach.
+apps/music-distribution/backend/src/controllers/analytics.music.controller.ts – API statystyk odtworzeń.
+apps/music-distribution/backend/src/controllers/financials.controller.ts – API raportów finansowych.
+apps/music-distribution/backend/src/controllers/payouts.controller.ts – API wypłat.
+apps/music-distribution/backend/src/controllers/profiles.controller.ts – API profili artystów.
+apps/music-distribution/backend/src/controllers/notifications.controller.ts – API powiadomień.
+
+Ścieżki API
+apps/music-distribution/backend/src/routes/music.routes.ts – Ścieżki API dla muzyki.
+apps/music-distribution/backend/src/routes/analytics.routes.ts – Ścieżki API dla analityki.
+apps/music-distribution/backend/src/routes/financials.routes.ts – Ścieżki API dla finansów.
+apps/music-distribution/backend/src/routes/payouts.routes.ts – Ścieżki API dla wypłat.
+apps/music-distribution/backend/src/routes/profiles.routes.ts – Ścieżki API dla profili artystów.
+
+Middleware
+apps/music-distribution/backend/src/middlewares/auth.middleware.ts – Autoryzacja JWT.
+apps/music-distribution/backend/src/middlewares/error.middleware.ts – Obsługa błędów.
+apps/music-distribution/backend/src/middlewares/rateLimit.middleware.ts – Limity API.
+
+Kolejki i zadania
+apps/music-distribution/backend/src/queues/index.ts – Główna konfiguracja kolejek.
+apps/music-distribution/backend/src/queues/distribution.queue.ts – Kolejka dystrybucji.
+apps/music-distribution/backend/src/queues/royaltyIngestion.queue.ts – Kolejka importu raportów tantiem.
+apps/music-distribution/backend/src/jobs/distribution.job.ts – Zadanie wysyłki wydań.
+apps/music-distribution/backend/src/jobs/royaltyIngestion.job.ts – Zadanie importu tantiem.
+
+Narzędzia
+apps/music-distribution/backend/src/utils/audioSpecs.util.ts – Wymogi techniczne plików audio.
+apps/music-distribution/backend/src/utils/imageSpecs.util.ts – Wymogi dla okładek/obrazów.
+apps/music-distribution/backend/src/utils/date.util.ts – Narzędzia pracy z datami.
+apps/music-distribution/backend/src/utils/currency.util.ts – Konwersje i operacje walutowe.
+
+Architektura Front-endu
+Główna konfiguracja
+apps/music-distribution/frontend/next.config.js – Konfiguracja Next.js.
+apps/music-distribution/frontend/package.json – Zależności frontendu.
+apps/music-distribution/frontend/tailwind.config.ts – Stylowanie TailwindCSS.
+apps/music-distribution/frontend/src/app/layout.tsx – Układ główny aplikacji.
+apps/music-distribution/frontend/src/app/page.tsx – Strona startowa modułu.
+
+Strony
+apps/music-distribution/frontend/src/pages/music/dashboard.page.tsx – Pulpit muzyczny (overview).
+apps/music-distribution/frontend/src/pages/music/catalog.page.tsx – Lista wydań.
+apps/music-distribution/frontend/src/pages/music/releases/new.page.tsx – Dodanie nowego wydania.
+apps/music-distribution/frontend/src/pages/music/releases/[releaseId].page.tsx – Szczegóły wydania.
+apps/music-distribution/frontend/src/pages/music/analytics.page.tsx – Analityka odtworzeń.
+apps/music-distribution/frontend/src/pages/music/royalties.page.tsx – Raport tantiem.
+apps/music-distribution/frontend/src/pages/music/payouts.page.tsx – Panel wypłat.
+apps/music-distribution/frontend/src/pages/music/profiles.page.tsx – Profile artystów.
+apps/music-distribution/frontend/src/pages/music/notifications.page.tsx – Powiadomienia.
+
+Komponenty
+apps/music-distribution/frontend/src/components/music/ReleaseListItem.component.tsx – Element listy katalogu.
+apps/music-distribution/frontend/src/components/music/ReleaseEditorForm.component.tsx – Formularz edycji wydania.
+apps/music-distribution/frontend/src/components/music/TrackMetadataForm.component.tsx – Formularz danych utworu.
+apps/music-distribution/frontend/src/components/music/SplitsEditor.component.tsx – Edycja podziałów tantiem.
+apps/music-distribution/frontend/src/components/music/DistributionStatusTracker.component.tsx – Status dystrybucji.
+apps/music-distribution/frontend/src/components/music/RoyaltyChart.component.tsx – Wykres tantiem.
+apps/music-distribution/frontend/src/components/music/RevenueByChannelChart.component.tsx – Przychody wg kanałów.
+apps/music-distribution/frontend/src/components/music/AudioPlayer.component.tsx – Odtwarzacz audio.
+apps/music-distribution/frontend/src/components/music/UGCPolicyToggle.component.tsx – Przełącznik Content ID/UGC.
+apps/music-distribution/frontend/src/components/music/PayoutMethodForm.component.tsx – Formularz metod wypłat.
+apps/music-distribution/frontend/src/components/music/RecoupmentTable.component.tsx – Tabela kosztów i recoupmentu.
+apps/music-distribution/frontend/src/components/music/NotificationCenter.component.tsx – Centrum powiadomień.
+apps/music-distribution/frontend/src/components/music/ProfileSyncWizard.component.tsx – Kreator synchronizacji profili.
+
+Biblioteka i narzędzia
+apps/music-distribution/frontend/src/lib/api/music.client.ts – Klient API dla muzyki.
+apps/music-distribution/frontend/src/lib/api/analytics.client.ts – Klient API analityki.
+apps/music-distribution/frontend/src/lib/api/financials.client.ts – Klient API finansów.
+apps/music-distribution/frontend/src/lib/forms/validators/metadata.schema.ts – Walidacja formularza metadanych.
+apps/music-distribution/frontend/src/lib/forms/validators/splits.schema.ts – Walidacja podziałów tantiem.
+apps/music-distribution/frontend/src/lib/hooks/useDistributionStatus.ts – Hook do statusu dystrybucji.
+apps/music-distribution/frontend/src/lib/hooks/useRoyaltyTrends.ts – Hook do trendów tantiem.
+
+Style
+apps/music-distribution/frontend/src/styles/globals.css – Style globalne modułu muzycznego.
+
+Moduł 2: Digital Publishing
+Architektura Back-endu
+Core / Config
+apps/digital-publishing/backend/src/server.ts – Punkt wejściowy backendu, uruchamia serwer Express/Node.
+apps/digital-publishing/backend/src/app.ts – Konfiguracja aplikacji, middleware, rejestracja routerów.
+apps/digital-publishing/backend/src/config/env.ts – Zmienne środowiskowe (API keys, baza, ustawienia).
+apps/digital-publishing/backend/src/config/logger.ts – Logger do zapisu zdarzeń i błędów systemowych.
+apps/digital-publishing/backend/src/db/ormconfig.ts – Konfiguracja ORM (np. TypeORM/Prisma).
+apps/digital-publishing/backend/src/db/migrations/0001_init.ts – Pierwsza migracja: tabele autorów i publikacji.
+apps/digital-publishing/backend/src/db/migrations/0002_add_isbn_bisac.ts – Migracja dodająca ISBN i kategorie BISAC.
+
+Typy i DTO
+apps/digital-publishing/backend/src/types/publishing.d.ts – Typy globalne dla publikacji cyfrowych.
+apps/digital-publishing/backend/src/types/rights.d.ts – Typy praw autorskich i licencji.
+apps/digital-publishing/backend/src/dtos/author.dto.ts – DTO danych autora.
+apps/digital-publishing/backend/src/dtos/publication.dto.ts – DTO publikacji (ebook, audiobook).
+apps/digital-publishing/backend/src/dtos/chapter.dto.ts – DTO rozdziałów i sekcji książki.
+apps/digital-publishing/backend/src/dtos/rights.dto.ts – DTO licencji i praw.
+apps/digital-publishing/backend/src/dtos/sales.dto.ts – DTO raportów sprzedażowych.
+
+Modele danych
+apps/digital-publishing/backend/src/models/author.model.ts – Model autora (biografia, zdjęcie, identyfikatory).
+apps/digital-publishing/backend/src/models/publication.model.ts – Model publikacji (książka, ebook, audiobook).
+apps/digital-publishing/backend/src/models/publicationFormat.model.ts – Model formatów publikacji (EPUB, PDF, DOCX).
+apps/digital-publishing/backend/src/models/chapter.model.ts – Model rozdziału/sekcji książki.
+apps/digital-publishing/backend/src/models/isbn.model.ts – Model numerów ISBN dla książek.
+apps/digital-publishing/backend/src/models/bisacCategory.model.ts – Kategorie tematyczne BISAC.
+apps/digital-publishing/backend/src/models/territorialRight.model.ts – Model praw terytorialnych dystrybucji.
+apps/digital-publishing/backend/src/models/translationLicense.model.ts – Licencje na tłumaczenia.
+apps/digital-publishing/backend/src/models/adaptationLicense.model.ts – Licencje na adaptacje (np. film, audiobook).
+apps/digital-publishing/backend/src/models/drmPolicy.model.ts – Polityka DRM (zabezpieczenia i watermarking).
+apps/digital-publishing/backend/src/models/salesReport.model.ts – Raport sprzedaży z kanałów.
+apps/digital-publishing/backend/src/models/storeChannel.model.ts – Obsługiwane kanały sprzedaży (Amazon KDP, Kobo).
+apps/digital-publishing/backend/src/models/collaboration.model.ts – Model współpracy (redaktorzy, współautorzy).
+apps/digital-publishing/backend/src/models/version.model.ts – Historia wersji publikacji.
+apps/digital-publishing/backend/src/models/notification.model.ts – Powiadomienia dla autorów.
+
+Repositories
+apps/digital-publishing/backend/src/repositories/publication.repository.ts – Repozytorium publikacji.
+apps/digital-publishing/backend/src/repositories/chapter.repository.ts – Repozytorium rozdziałów.
+apps/digital-publishing/backend/src/repositories/rights.repository.ts – Repozytorium praw i licencji.
+apps/digital-publishing/backend/src/repositories/sales.repository.ts – Repozytorium raportów sprzedaży.
+
+Walidacja
+apps/digital-publishing/backend/src/validators/publication.validator.ts – Walidacja danych publikacji.
+apps/digital-publishing/backend/src/validators/chapter.validator.ts – Walidacja treści rozdziałów.
+apps/digital-publishing/backend/src/validators/rights.validator.ts – Walidacja licencji i praw.
+apps/digital-publishing/backend/src/validators/drm.validator.ts – Walidacja ustawień DRM.
+
+Serwisy biznesowe
+apps/digital-publishing/backend/src/services/publication.service.ts – Logika biznesowa publikacji.
+apps/digital-publishing/backend/src/services/chapter.service.ts – Obsługa rozdziałów książki.
+apps/digital-publishing/backend/src/services/rightsManagement.service.ts – Zarządzanie licencjami i prawami.
+apps/digital-publishing/backend/src/services/drmProtection.service.ts – Implementacja zabezpieczeń DRM/watermark.
+apps/digital-publishing/backend/src/services/contentIngestion.service.ts – Import plików (EPUB, PDF, DOCX).
+apps/digital-publishing/backend/src/services/conversion/epubConverter.service.ts – Konwersja do EPUB.
+apps/digital-publishing/backend/src/services/conversion/pdfGenerator.service.ts – Generowanie plików PDF.
+apps/digital-publishing/backend/src/services/conversion/docxImporter.service.ts – Import treści z DOCX.
+apps/digital-publishing/backend/src/services/conversion/audiobookPackager.service.ts – Pakowanie audiobooków.
+apps/digital-publishing/backend/src/services/collaboration.service.ts – Obsługa współpracy nad publikacją.
+apps/digital-publishing/backend/src/services/salesAggregation.service.ts – Agregacja raportów sprzedaży.
+apps/digital-publishing/backend/src/services/woocommerceSync.service.ts – Synchronizacja z WooCommerce.
+apps/digital-publishing/backend/src/services/notification.service.ts – Obsługa powiadomień dla autorów.
+
+Integracje
+apps/digital-publishing/backend/src/integrations/stores/amazonKDP.adapter.ts – Integracja z Amazon KDP.
+apps/digital-publishing/backend/src/integrations/stores/appleBooks.adapter.ts – Integracja z Apple Books.
+apps/digital-publishing/backend/src/integrations/stores/googlePlayBooks.adapter.ts – Integracja z Google Play Books.
+apps/digital-publishing/backend/src/integrations/stores/kobo.adapter.ts – Integracja z Kobo.
+apps/digital-publishing/backend/src/integrations/stores/empik.adapter.ts – Integracja z Empik.
+apps/digital-publishing/backend/src/integrations/print/ingramSpark.adapter.ts – Integracja z IngramSpark (druk).
+apps/digital-publishing/backend/src/integrations/payments/stripe.adapter.ts – Integracja płatności Stripe.
+apps/digital-publishing/backend/src/integrations/cms/woocommerce.adapter.ts – Integracja z WooCommerce.
+
+Kontrolery i API
+apps/digital-publishing/backend/src/controllers/publication.controller.ts – API dla publikacji.
+apps/digital-publishing/backend/src/controllers/chapter.controller.ts – API rozdziałów.
+apps/digital-publishing/backend/src/controllers/rightsManagement.controller.ts – API zarządzania prawami.
+apps/digital-publishing/backend/src/controllers/authorProfile.controller.ts – API profilu autora.
+apps/digital-publishing/backend/src/controllers/sales.controller.ts – API sprzedaży.
+apps/digital-publishing/backend/src/controllers/notifications.controller.ts – API powiadomień.
+
+Ścieżki API
+apps/digital-publishing/backend/src/routes/publishing.routes.ts – Ścieżki API dla publikacji.
+apps/digital-publishing/backend/src/routes/rights.routes.ts – Ścieżki API praw/licencji.
+apps/digital-publishing/backend/src/routes/sales.routes.ts – Ścieżki API sprzedaży.
+
+Middleware
+apps/digital-publishing/backend/src/middlewares/auth.middleware.ts – Middleware autoryzacji JWT.
+apps/digital-publishing/backend/src/middlewares/error.middleware.ts – Obsługa błędów.
+
+Kolejki i zadania
+apps/digital-publishing/backend/src/queues/index.ts – Główna konfiguracja kolejek.
+apps/digital-publishing/backend/src/queues/conversion.queue.ts – Kolejka konwersji plików.
+apps/digital-publishing/backend/src/queues/distribution.queue.ts – Kolejka dystrybucji publikacji.
+apps/digital-publishing/backend/src/jobs/conversion.job.ts – Zadania konwersji plików.
+apps/digital-publishing/backend/src/jobs/distribution.job.ts – Zadania dystrybucji.
+
+Narzędzia
+apps/digital-publishing/backend/src/utils/isbn.util.ts – Narzędzia pracy z numerami ISBN.
+apps/digital-publishing/backend/src/utils/bisac.util.ts – Obsługa kategorii BISAC.
+apps/digital-publishing/backend/src/utils/drm.util.ts – Narzędzia DRM i watermarkingu.
+apps/digital-publishing/backend/src/utils/fileStorage.util.ts – Obsługa plików i storage.
+apps/digital-publishing/backend/src/utils/date.util.ts – Narzędzia do obsługi dat.
+
+Architektura Front-endu
+Główna konfiguracja
+apps/digital-publishing/frontend/next.config.js – Konfiguracja Next.js.
+apps/digital-publishing/frontend/package.json – Zależności frontendu.
+apps/digital-publishing/frontend/tailwind.config.ts – Stylowanie TailwindCSS.
+apps/digital-publishing/frontend/src/app/layout.tsx – Układ główny aplikacji.
+apps/digital-publishing/frontend/src/app/page.tsx – Strona startowa modułu.
+
+Strony
+apps/digital-publishing/frontend/src/pages/publishing/dashboard.page.tsx – Pulpit wydawniczy (overview).
+apps/digital-publishing/frontend/src/pages/publishing/library.page.tsx – Biblioteka wszystkich publikacji.
+apps/digital-publishing/frontend/src/pages/publishing/publications/new.page.tsx – Dodanie nowej publikacji.
+apps/digital-publishing/frontend/src/pages/publishing/publications/[publicationId]/editor.page.tsx – Edytor treści książki.
+apps/digital-publishing/frontend/src/pages/publishing/publications/[publicationId]/formats.page.tsx – Ustawienia formatów (EPUB, PDF).
+apps/digital-publishing/frontend/src/pages/publishing/publications/[publicationId]/rights.page.tsx – Zarządzanie prawami/licencjami.
+apps/digital-publishing/frontend/src/pages/publishing/publications/[publicationId]/distribution.page.tsx – Dystrybucja publikacji.
+apps/digital-publishing/frontend/src/pages/publishing/publications/[publicationId]/sales.page.tsx – Raporty sprzedaży.
+apps/digital-publishing/frontend/src/pages/publishing/authorProfile.page.tsx – Strona profilu autora.
+apps/digital-publishing/frontend/src/pages/publishing/notifications.page.tsx – Centrum powiadomień.
+
+Komponenty
+apps/digital-publishing/frontend/src/components/publishing/PublicationCard.component.tsx – Karta publikacji w bibliotece.
+apps/digital-publishing/frontend/src/components/publishing/BookMetadataForm.component.tsx – Formularz metadanych książki (ISBN, opis).
+apps/digital-publishing/frontend/src/components/publishing/ChapterManager.component.tsx – Zarządzanie rozdziałami drag&drop.
+apps/digital-publishing/frontend/src/components/publishing/TextEditor.component.tsx – Edytor treści publikacji.
+apps/digital-publishing/frontend/src/components/publishing/FormatTabs.component.tsx – Zakładki formatów (EPUB, PDF, audiobook).
+apps/digital-publishing/frontend/src/components/publishing/EPUBSettingsForm.component.tsx – Ustawienia eksportu EPUB.
+apps/digital-publishing/frontend/src/components/publishing/PDFSettingsForm.component.tsx – Ustawienia eksportu PDF.
+apps/digital-publishing/frontend/src/components/publishing/AudiobookChaptersUploader.component.tsx – Import nagrań do audiobooka.
+apps/digital-publishing/frontend/src/components/publishing/RightsManagerPanel.component.tsx – Panel praw/licencji.
+apps/digital-publishing/frontend/src/components/publishing/TerritorialRightsSelector.component.tsx – Interaktywna mapa praw terytorialnych.
+apps/digital-publishing/frontend/src/components/publishing/TranslationLicensesTable.component.tsx – Tabela licencji tłumaczeń.
+apps/digital-publishing/frontend/src/components/publishing/AdaptationLicensesTable.component.tsx – Tabela licencji adaptacyjnych.
+apps/digital-publishing/frontend/src/components/publishing/DrmSettingsToggle.component.tsx – Przełącznik DRM/watermarkingu.
+apps/digital-publishing/frontend/src/components/publishing/StoreChannelsPicker.component.tsx – Wybór kanałów sprzedaży.
+apps/digital-publishing/frontend/src/components/publishing/WooCommerceSyncButton.component.tsx – Synchronizacja z WooCommerce.
+apps/digital-publishing/frontend/src/components/publishing/SalesAnalyticsChart.component.tsx – Wykresy sprzedaży.
+apps/digital-publishing/frontend/src/components/publishing/CollaborationPanel.component.tsx – Panel współpracy (autorzy/redaktorzy).
+apps/digital-publishing/frontend/src/components/publishing/VersionHistorySidebar.component.tsx – Historia wersji publikacji.
+apps/digital-publishing/frontend/src/components/publishing/NotificationCenter.component.tsx – Widget powiadomień.
+
+Biblioteka i narzędzia
+apps/digital-publishing/frontend/src/lib/api/publishing.client.ts – Klient API publikacji.
+apps/digital-publishing/frontend/src/lib/api/rights.client.ts – Klient API praw/licencji.
+apps/digital-publishing/frontend/src/lib/api/sales.client.ts – Klient API sprzedaży.
+apps/digital-publishing/frontend/src/lib/forms/validators/publication.schema.ts – Walidacja formularza publikacji.
+apps/digital-publishing/frontend/src/lib/forms/validators/rights.schema.ts – Walidacja formularza praw.
+apps/digital-publishing/frontend/src/lib/hooks/useConversionStatus.ts – Hook do statusu konwersji plików.
+apps/digital-publishing/frontend/src/lib/hooks/useSalesTrends.ts – Hook do analizy trendów sprzedaży.
+
+Style
+apps/digital-publishing/frontend/src/styles/globals.css – Style globalne modułu wydawniczego.

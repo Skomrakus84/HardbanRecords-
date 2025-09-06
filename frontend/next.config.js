@@ -8,6 +8,12 @@ const nextConfig = {
     optimizeFonts: true,
     optimizeImages: true,
   },
+  images: {
+    domains: [
+      'localhost',
+      'fannbqzvjwyazeosectm.supabase.co'
+    ]
+  }
 }
 
 module.exports = nextConfig

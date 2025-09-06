@@ -16,10 +16,8 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.878.0",
-    "@aws-sdk/s3-request-presigner": "^3.878.0",
     "@google/genai": "^1.15.0",
-    "aws-sdk": "^2.1480.0",
+    "@supabase/supabase-js": "^2.57.2",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

@@ -8,7 +8,7 @@
 - Naprawa importów i typów, dopuszczenie `undefined` w typach, poprawa Task i AppState
 - Analiza i uporządkowanie katalogów: główny, src, src/components, src/pages, backend, cypress, scripts, layouts, utils
 - Identyfikacja i przygotowanie do usunięcia zbędnych plików .md
-- Wdrożenie uploadu plików okładki i pliku muzycznego w module muzycznym (AddReleaseForm, integracja z S3, backend, client)
+- Wdrożenie uploadu plików okładki i pliku muzycznego w module muzycznym (AddReleaseForm, integracja z Supabase Storage, backend, client)
 - Naprawa struktury JSX i typów w AddReleaseForm, przekazywanie tylko właściwych pól do backendu
 - Wdrożenie obsługi dodawania i usuwania rozdziałów w `ChaptersPage` (frontend, Zustand, UX)
 - Wdrożenie podglądu plików audio i PDF w `ChapterEditForm` (audio player, iframe/pdf, link do pobrania)
@@ -119,11 +119,12 @@
     - [x] `PATCH /api/publishing/books/:id/chapters/:chapterIndex` - do aktualizacji treści rozdziału (obsługiwane przez PATCH /books/:id z chapters)
     - [x] `POST /api/publishing/tasks` - do dodawania nowego zadania
     - [x] `PATCH /api/publishing/tasks/:id` - do zmiany statusu zadania
-- Integracja z AWS S3 (Przesyłanie Plików):
-    - [x] Instalacja `aws-sdk`
-    - [x] Stworzenie endpointu `GET /api/s3-presigned-url`, który generuje bezpieczny, tymczasowy link do przesyłania plików
-    - [x] Implementacja logiki po stronie frontendu do przesyłania plików bezpośrednio do S3 przy użyciu wygenerowanego linku
-    - [x] Wdrożenie uploadu ilustracji do książek oraz plików do rozdziałów (frontend, S3, ChaptersPage, ChapterEditForm)
+- Integracja z Supabase Storage (Przesyłanie Plików):
+    - [x] Migracja z AWS S3 na Supabase Storage
+    - [x] Instalacja `@supabase/supabase-js`
+    - [x] Stworzenie endpointu `GET /api/s3-presigned-url`, który generuje bezpieczny, tymczasowy link do przesyłania plików (kompatybilny z Supabase)
+    - [x] Implementacja logiki po stronie frontendu do przesyłania plików bezpośrednio do Supabase Storage przy użyciu wygenerowanego linku
+    - [x] Wdrożenie uploadu ilustracji do książek oraz plików do rozdziałów (frontend, Supabase Storage, ChaptersPage, ChapterEditForm)
 - Dodanie podstawowej walidacji przychodzących danych
 - Zorganizowanie kodu w moduły (np. osobne pliki dla `routes`, `controllers`)
 - Przygotowanie aplikacji do wdrożenia na darmowej platformie (np. Vercel, Render)
